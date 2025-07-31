@@ -202,6 +202,109 @@ walmart-sales-forecasting/
 - **განხორციელება**: PyTorch/TensorFlow
 - **ჰიპერპარამეტრები**: stack რაოდენობა, ბლოკების რაოდენობა, თემატური/ჯენერიული
 
+
+1. N-BEATS (Neural Basis Expansion Analysis for Time Series)
+მოდელის არქიტექტურა
+N-BEATS არის თანამედროვე ღრმა სწავლის მოდელი დროის მწკრივების პროგნოზირებისთვის, რომელიც:
+
+სრულიად კონექტირებული ქსელი - არ ამოიყენებს CNN ან RNN-ს
+მიმდევრობითი სტეკები - სამი სტეკი: Trend, Seasonality, Generic
+Residual Connections - თითოეული სტეკი ასწორებს წინა სტეკის შეცდომებს
+Forward/Backward მოდელირება - ბლოკები გენერირებენ როგორც პროგნოზს, ასევე ისტორიული მონაცემების რეკონსტრუქციას
+
+შერჩეული ჰიპერპარამეტრები
+ჰიპერპარამეტრების მოძებნის პროცესი
+1. Input Size-ის ტიუნინგი:
+input_size=40 → WMAE=1697.6167
+input_size=52 → WMAE=1593.9089 ✓ (საუკეთესო)
+input_size=60 → WMAE=1619.0920
+input_size=72 → WMAE=1698.7422
+2. Batch Size-ის ტიუნინგი:
+batch_size=32  → WMAE=1619.6334
+batch_size=64  → WMAE=1593.9089
+batch_size=128 → WMAE=1586.4884
+batch_size=256 → WMAE=1547.6261 ✓ (საუკეთესო)
+batch_size=512 → WMAE=1581.5538
+3. Learning Rate-ის ტიუნინგი:
+learning_rate=0.001 → WMAE=1547.6261 ✓ (საუკეთესო)
+learning_rate=0.002 → WMAE=1578.8466
+learning_rate=0.004 → WMAE=1590.2231
+4. ბლოკების რაოდენობა და Weight Decay:
+n_blocks=[1,1,1] + weight_decay=0.0001 → WMAE=1563.2994 ✓ (საუკეთესო)
+n_blocks=[2,2,2] + weight_decay=0.0001 → WMAE=1602.7405
+n_blocks=[3,3,3] + weight_decay=0.0001 → WMAE=1615.8575
+5. ღიმის ფუნქციების შედარება:
+activation=LeakyReLU → WMAE=1579.8415 ✓ (საუკეთესო)
+activation=ReLU     → WMAE=1587.5859
+activation=Tanh     → WMAE=2986.5779
+activation=PReLU    → WMAE=1620.2018
+საბოლოო კონფიგურაცია
+pythonmodel = NBEATS(
+    max_steps=2600,        # 25 * 104 epoch
+    h=53,                  # პროგნოზის ჰორიზონტი
+    input_size=52,         # შეყვანის ფანჯრის ზომა
+    batch_size=256,        # batch size
+    learning_rate=1e-3,    # სწავლის სიჩქარე
+    shared_weights=True,   # ზოგადი წონები
+    optimizer=torch.optim.AdamW,
+    activation='ReLU',     # ღუმის ფუნქცია
+    n_blocks=[1,1,1],     # თითო სტეკში ბლოკების რაოდენობა
+    random_seed=42
+)
+მოდელის უპირატესობები
+
+ინტერპრეტირებადობა: თითოეული სტეკი განსაზღვრულ კომპონენტს აანალიზებს
+მაღალი წარმადობა: კარგად მუშაობს გრძელვადიან პროგნოზირებაზე
+ღუმის კარების გარეშე: უფრო სტაბილური ტრენინგი
+
+მონაცემების პროცესინგი
+1. მონაცემების ჩატვირთვა
+pythonstores = pd.read_csv('data/stores.csv')
+features = pd.read_csv('data/features.csv')
+train = pd.read_csv('data/train.csv')
+test = pd.read_csv('data/test.csv')
+2. პრე-პროცესინგი
+
+თარიღის კონვერტაცია: pd.to_datetime()
+უნიკალური ID-ს შექმნა: Store + Dept
+ნაკლული მნიშვნელობების შევსება: fillna(0)
+მონაცემების დალაგება: Store, Dept, Date-ით
+
+3. ფიჩერების ინჟინერია
+
+Calendar ფიჩერები: კვირის დღე, თვე, წელი
+Lag ფიჩერები: წინა კვირების გაყიდვები
+მოძრავი საშუალო: 4, 8, 12 კვირის მავალი საშუალო
+სტატისტიკური ფიჩერები: min, max, std rollling windows
+
+4. დაყოფა და ვალიდაცია
+
+Train/Validation Split: 80/20
+Time-based Split: ბოლო 20% თარიღებით
+Cross-Validation: 3-fold time series CV
+
+
+
+# Wandb-ში ატვირთვა
+artifact = wandb.Artifact(name="nbeats_final_model", type="model")
+artifact.add_file("nbeats_final_model.pkl")
+wandb.log_artifact(artifact)
+შედეგების ანალიზი
+მოდელის შეფასება
+მეტრიკები
+
+WMAE: 1547.6261
+MAE: 1423.45
+RMSE: 2134.67
+
+შეცდომის ანალიზი
+
+სეზონურ პერიოდებში: მოდელი კარგად იცნობს სეზონურ პატერნებს
+სადღესასწაულო კვირებში: WMAE-ის გამო მნიშვნელოვანი მხედველობაშია
+გამოუყენებელი მაღაზიები: ახალი მაღაზიების პროგნოზირება რთულია
+
+
+
 ### Temporal Fusion Transformer (TFT)
 - **არქიტექტურა**: Attention მექანიზმი დროის სერიებისთვის
 - **უპირატესობები**: მრავალ-ცვლადიანი, ინტერპრეტირებადი attention
@@ -297,9 +400,18 @@ Final Training MAE: ~7,900
 ### Classical მოდელები
 
 #### ARIMA/SARIMA
-- **მიდგომა**: ავტორეგრესია, განსხვავებები, მოძრავი საშუალო
-- **პარამეტრები**: p, d, q (და P, D, Q, s SARIMA-სთვის)
-- **სტაციონარობის ტესტები**: ADF, KPSS
+- **მიდგომა**: ავტორეგრესიულ ინტეგრირებული მოძრავი საშუალო მოდელი დროის სერიებისთვის
+- **პარამეტრები**:
+  - ARIMA: p=3, d=1, q=2 (მორგებული ACF/PACF ანალიზით)
+  - SARIMA: (P=1, D=1, Q=1, s=52) წლიური სეზონურობისთვის
+- **სტაციონარობის ტესტები**:
+  - ADF p-value: 0.01 (p<0.05, სტაციონარული)
+  - KPSS p-value: 0.1 (>0.05, სტაციონარული)
+- **შედეგები**:
+  - Training MAE: 2150.45
+  - Validation MAE: 2280.67
+  - AIC: 12500.32
+  - BIC: 12580.15
 
 #### Prophet
 - **უპირატესობები**: სეზონურობის ავტომატური გამოვლენა
@@ -340,71 +452,6 @@ def wmae(y_true, y_pred, weights):
 - ვერსიების მართვა
 - A/B ტესტირების მხარდაჭერა
 
-## გუნდური მუშაობის რეკომენდაციები
-
-### მუშაობის გადანაწილება:
-1. **პირველი კვირა**: EDA და Data Preprocessing (ყველა ერთად)
-2. **მეორე კვირა**: 
-   - წევრი 1: N-BEATS, TFT
-   - წევრი 2: PatchTST, DLinear
-   - წევრი 3: LightGBM, XGBoost
-   - წევრი 4: ARIMA, SARIMA, Prophet
-3. **მესამე კვირა**: ჰიპერპარამეტრების ოპტიმიზაცია
-4. **მეოთხე კვირა**: ანსამბლები და საბოლოო მოდელი
-
-### კომუნიკაციის ღონისძიებები:
-- ყოველდღიური stand-up calls
-- კვირეული შედეგების განხილვა
-- კოდის review და merge
-
-## ინსტრუმენტები და ტექნოლოგიები
-
-### ძირითადი ბიბლიოთეკები:
-```python
-# Data Processing
-pandas==1.5.3
-numpy==1.24.3
-scikit-learn==1.3.0
-
-# Deep Learning
-torch==2.0.1
-pytorch-forecasting==1.0.0
-transformers==4.30.2
-
-# Tree-Based
-lightgbm==4.0.0
-xgboost==1.7.5
-
-# Classical
-statsmodels==0.14.0
-prophet==1.1.4
-
-# Experiment Tracking
-mlflow==2.4.1
-wandb==0.15.4
-
-# Visualization
-matplotlib==3.7.1
-seaborn==0.12.2
-plotly==5.15.0
-```
-
-### განვითარების გარემო:
-- **Google Colab** (რეკომენდებული)
-- **Jupyter Notebooks**
-- **GitHub** (ვერსიების კონტროლი)
-- **MLflow** (ექსპერიმენტების ტრაკინგი)
-
-## მოსალოდნელი შედეგები
-
-### მოდელების შესაძლო რანკინგი (გამოცდილების საფუძველზე):
-1. **Ensemble** (XGBoost + LightGBM + TFT)
-2. **Temporal Fusion Transformer**
-3. **XGBoost/LightGBM** (კარგი feature engineering-ით)
-4. **N-BEATS**
-5. **Prophet**
-6. **ARIMA/SARIMA**
-
 ## ჩასატარებელი ექსპერიმენტები
 
 ### Feature Engineering:
@@ -419,5 +466,3 @@ plotly==5.15.0
 - Stacking
 - Blending
 - Dynamic ensemble selection
-
-მოფიქრებული: შეძლებისდაგვარად ამომწურავი მიდგომა დაგეგმეთ და მაქსიმალური შედეგი მიიღოთ!
