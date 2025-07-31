@@ -42,6 +42,66 @@ walmart-sales-forecasting/
 └── README.md
 ```
 
+# EDA
+
+## Data Exploration Analysis
+
+The data exploration notebook (`notebooks/data_exploration.ipynb`) provides comprehensive analysis of the Walmart sales data. Key findings include:
+
+### Data Overview
+- Analysis of train, test, stores, and features datasets
+- Examination of data types, missing values, and basic statistics
+- Time period coverage and data completeness checks
+
+### Key Visualizations
+- Time series plots of sales across different stores and departments
+- Distribution analysis of sales, temperature, fuel prices, and other numerical features
+- Correlation matrices to identify relationships between variables
+- Box plots to understand sales distribution and identify outliers
+
+### Feature Analysis
+- Examination of store types and their sales performance
+- Impact of holidays and special events on sales
+- Analysis of weekly and monthly sales patterns
+- Effect of markdowns and promotions on sales
+
+### Data Quality
+- Identification of missing values and outliers
+- Analysis of data consistency across different sources
+- Examination of potential data entry errors
+
+### Time Series Components
+- Decomposition of time series data into trend, seasonality, and residuals
+- Analysis of weekly and yearly seasonality patterns
+- Identification of any structural breaks or anomalies in the time series
+
+### Statistical Tests
+- Stationarity tests for time series data
+- Normality tests for key variables
+- Correlation analysis between features and target variable
+
+### Key Insights
+1. Strong weekly and yearly seasonality patterns in sales data.
+2. Significant variation in sales across different store types and departments.
+3. Clear impact of holidays and promotional events on sales.
+4. Relationships between external factors (temperature, fuel prices) and sales.
+5. Opportunities for feature engineering based on time-based patterns.
+6. Store Type A consistently outperforms Types B and C in both average and total sales.
+7. Department sales variability is high; a few departments (e.g., produce, general merchandise) dominate total sales, while others are niche.
+8. MarkDown promotions lead to short-term sales spikes, with MarkDown1 and MarkDown4 being the most effective.
+9. End-of-month and bi-weekly payday effects are visible in sales spikes across most stores.
+10. Data is complete with no date gaps; missing values are primarily in markdown and some feature columns.
+
+### Visualizations from Data Exploration
+- **Average Sales by Store Type:** Bar plot showing Store Type A leads in sales, followed by B and C.
+- **Sales vs Store Size:** Line plot illustrating that larger stores tend to have higher average sales, with diminishing returns at the largest sizes.
+- **Top 20 Most Variable Departments:** Bar plot showing which departments have the highest sales volatility.
+- **Sales Impact of MarkDowns:** Bar plots comparing average sales with and without markdown events (e.g., MarkDown1, MarkDown4).
+- **Time Series Plots:** Sales trends over time for selected stores and departments, highlighting seasonality and holiday effects.
+- **Correlation Heatmaps:** Visual representation of relationships between features (e.g., temperature, fuel price, CPI, unemployment) and sales.
+
+For detailed code and plots, see `notebooks/data_exploration.ipynb`.
+
 ## MLflow ექსპერიმენტების სტრუქტურა
 
 ### ექსპერიმენტები:
