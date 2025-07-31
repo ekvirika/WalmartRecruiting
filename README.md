@@ -42,65 +42,78 @@ walmart-sales-forecasting/
 └── README.md
 ```
 
+აი თარგმანი ქართულად:
+
+---
+
 # EDA
 
-## Data Exploration Analysis
+## მონაცემების გამოკვლევის ანალიზი
 
-The data exploration notebook (`notebooks/data_exploration.ipynb`) provides comprehensive analysis of the Walmart sales data. Key findings include:
+მონაცემების გამოკვლევის ნოუთბუქი (`notebooks/data_exploration.ipynb`) გვთავაზობს Walmart-ის გაყიდვების მონაცემების ამომწურავ ანალიზს. ძირითადი მიგნებები მოიცავს:
 
-### Data Overview
-- Analysis of train, test, stores, and features datasets
-- Examination of data types, missing values, and basic statistics
-- Time period coverage and data completeness checks
+### მონაცემების მიმოხილვა
 
-### Key Visualizations
-- Time series plots of sales across different stores and departments
-- Distribution analysis of sales, temperature, fuel prices, and other numerical features
-- Correlation matrices to identify relationships between variables
-- Box plots to understand sales distribution and identify outliers
+* `train`, `test`, `stores` და `features` მონაცემთა სეტის ანალიზი
+* მონაცემთა ტიპების, ნაკლული მნიშნელობების და საბაზისო სტატისტიკის შესწავლა
+* დროითი დიაპაზონის დაფარვისა და მონაცემთა სრულობის შემოწმება
 
-### Feature Analysis
-- Examination of store types and their sales performance
-- Impact of holidays and special events on sales
-- Analysis of weekly and monthly sales patterns
-- Effect of markdowns and promotions on sales
+### ძირითადი ვიზუალიზაციები
 
-### Data Quality
-- Identification of missing values and outliers
-- Analysis of data consistency across different sources
-- Examination of potential data entry errors
+* გაყიდვების დროითი გრაფიკები სხვადასხვა მაღაზიებსა და დეპარტამენტებზე
+* გაყიდვების, ტემპერატურის, საწვავის ფასების და სხვა რიცხვითი მახასიათებლების განაწილების ანალიზი
+* კორელაციის მატრიცები ცვლადებს შორის კავშირის გამოსავლენად
+* ყუთის გრაფიკები (box plot) გაყიდვების განაწილებისა და ექსტრემალური მნიშვნელობების გასაანალიზებლად
 
-### Time Series Components
-- Decomposition of time series data into trend, seasonality, and residuals
-- Analysis of weekly and yearly seasonality patterns
-- Identification of any structural breaks or anomalies in the time series
+### მახასიათებლების ანალიზი
 
-### Statistical Tests
-- Stationarity tests for time series data
-- Normality tests for key variables
-- Correlation analysis between features and target variable
+* მაღაზიის ტიპების და მათი გაყიდვების შედეგიანობის შეფასება
+* არდადეგებისა და სპეციალური ღონისძიებების გავლენა გაყიდვებზე
+* ყოველკვირეული და ყოველთვიური გაყიდვების შაბლონების ანალიზი
+* ფასდაკლებებისა და აქციების გავლენა გაყიდვებზე
 
-### Key Insights
-1. Strong weekly and yearly seasonality patterns in sales data.
-2. Significant variation in sales across different store types and departments.
-3. Clear impact of holidays and promotional events on sales.
-4. Relationships between external factors (temperature, fuel prices) and sales.
-5. Opportunities for feature engineering based on time-based patterns.
-6. Store Type A consistently outperforms Types B and C in both average and total sales.
-7. Department sales variability is high; a few departments (e.g., produce, general merchandise) dominate total sales, while others are niche.
-8. MarkDown promotions lead to short-term sales spikes, with MarkDown1 and MarkDown4 being the most effective.
-9. End-of-month and bi-weekly payday effects are visible in sales spikes across most stores.
-10. Data is complete with no date gaps; missing values are primarily in markdown and some feature columns.
+### მონაცემთა ხარისხი
 
-### Visualizations from Data Exploration
-- **Average Sales by Store Type:** Bar plot showing Store Type A leads in sales, followed by B and C.
-- **Sales vs Store Size:** Line plot illustrating that larger stores tend to have higher average sales, with diminishing returns at the largest sizes.
-- **Top 20 Most Variable Departments:** Bar plot showing which departments have the highest sales volatility.
-- **Sales Impact of MarkDowns:** Bar plots comparing average sales with and without markdown events (e.g., MarkDown1, MarkDown4).
-- **Time Series Plots:** Sales trends over time for selected stores and departments, highlighting seasonality and holiday effects.
-- **Correlation Heatmaps:** Visual representation of relationships between features (e.g., temperature, fuel price, CPI, unemployment) and sales.
+* დაკარგული მნიშნელობების და ექსტრემალური მონაცემების იდენტიფიკაცია
+* მონაცემთა თანმიმდევრულობის ანალიზი სხვადასხვა წყაროს მიხედვით
+* მონაცემთა შეყვანის პოტენციური შეცდომების გამოკვლევა
 
-For detailed code and plots, see `notebooks/data_exploration.ipynb`.
+### დროითი რიგების კომპონენტები
+
+* დროითი მონაცემების დekompozიცია ტენდენციად, სეზონურობად და ნაშთებად
+* ყოველკვირეული და წლიური სეზონურობის ანალიზი
+* დროით რიგებში სტრუქტურული ცვლილებების ან ანომალიების გამოვლენა
+
+### სტატისტიკური ტესტები
+
+* სტატიონარობის ტესტები დროით მონაცემებზე
+* ნორმალურობის ტესტები ძირითადი ცვლადებისთვის
+* კორელაციის ანალიზი მახასიათებლებსა და სამიზნე ცვლადს შორის
+
+### ძირითადი მიგნებები
+
+1. გაყიდვებში გამოირჩევა ძლიერი ყოველკვირეული და წლიური სეზონურობა
+2. გაყიდვების მნიშვნელოვანი განსხვავებები სხვადასხვა მაღაზიის ტიპებსა და დეპარტამენტებს შორის
+3. არდადეგებისა და აქციების აშკარა გავლენა გაყიდვებზე
+4. გარე ფაქტორებს (ტემპერატურა, საწვავის ფასი) და გაყიდვებს შორის კავშირი
+5. დროით შაბლონებზე დაფუძნებული ახალი მახასიათებლების შექმნის შესაძლებლობები
+6. A ტიპის მაღაზიები სტაბილურად უკეთეს შედეგს აჩვენებენ, ვიდრე B და C ტიპები
+7. დეპარტამენტების გაყიდვების ვარიაბელობა მაღალია — რამდენიმე დეპარტამენტი (მაგ., პროდუქტები, საყოველთაო საქონელი) დომინირებს საერთო გაყიდვებში, დანარჩენები კი ნიშურია
+8. MarkDown აქციები იწვევს მოკლევადიან გაყიდვების მატებას, MarkDown1 და MarkDown4 ყველაზე ეფექტურია
+9. თვის ბოლოს და ორკვირიან ხელფასის დღეებში გაყიდვების მკვეთრი მატებაა შესამჩნევი
+10. მონაცემები სრულია — თარიღების გამოტოვება არ შეინიშნება; დაკარგული მნიშვნელობები ძირითადად markdown-ებსა და გარკვეულ მახასიათებლებში გვხვდება
+
+### ვიზუალიზაციები მონაცემთა ანალიზიდან
+
+* **საშუალო გაყიდვები მაღაზიის ტიპების მიხედვით:** სვეტების გრაფიკი, სადაც A ტიპი ლიდერობს გაყიდვებში, მოჰყვება B და C
+* **გაყიდვები მაღაზიის ზომის მიხედვით:** ხაზოვანი გრაფიკი, რომელიც აჩვენებს რომ უფრო დიდი მაღაზიები, როგორც წესი, მეტ გაყიდვებს ახორციელებენ, თუმცა დიდი ზომის შემთხვევაში დადგება მომატების ზღვარი
+* **ყველაზე ცვალებადი 20 დეპარტამენტი:** სვეტური გრაფიკი, რომელიც აჩვენებს რომელ დეპარტამენტებს აქვთ ყველაზე მაღალი გაყიდვების ვარიაბელობა
+* **MarkDown აქციების გავლენა:** გრაფიკები, რომლებიც ადარებს საშუალო გაყიდვებს markdown-ის არსებობისა და არარსებობის დროს (მაგ., MarkDown1, MarkDown4)
+* **დროითი გრაფიკები:** გაყიდვების ტენდენციები დროის მიხედვით შერჩეულ მაღაზიებსა და დეპარტამენტებში — სეზონურობისა და არდადეგების ეფექტის დემონსტრირებით
+* **კორელაციის სითბური რუკები (heatmaps):** მახასიათებლებსა და გაყიდვებს შორის ურთიერთობის ვიზუალური წარმოდგენა (მაგ., ტემპერატურა, საწვავის ფასი, CPI, უმუშევრობა)
+
+დეტალური კოდი და გრაფიკებისთვის იხილეთ `notebooks/data_exploration.ipynb`.
+
 
 ## MLflow ექსპერიმენტების სტრუქტურა
 
